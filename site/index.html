@@ -19,11 +19,14 @@
   body { margin: 0; background: var(--bg); color: var(--text);
          font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
   a { color: var(--accent); }
-  header { padding: 20px 16px 4px; max-width: 1400px; margin: 0 auto; }
+  header { padding: 20px 16px 4px; max-width: 1600px; margin: 0 auto; }
   header h1 { font-size: 20px; margin: 0 0 4px; }
   .muted { color: var(--muted); }
-  main { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px;
-         padding: 16px; max-width: 1400px; margin: 0 auto; }
+  /* 4 x 1 on wide screens, 2 x 2 on medium ones, one column on phones */
+  main { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+         padding: 16px; max-width: 1600px; margin: 0 auto; }
+  @media (max-width: 1100px) { main { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { main { grid-template-columns: minmax(0, 1fr); } }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
           display: flex; flex-direction: column; min-width: 0; }
   .screen { position: relative; background: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 10; }
@@ -34,7 +37,7 @@
   .body p { margin: 6px 0 0; }
   .play { display: inline-block; background: var(--accent); color: var(--accent-text); text-decoration: none;
           padding: 5px 12px; border-radius: 6px; font-size: 13px; }
-  footer { max-width: 1400px; margin: 0 auto; padding: 0 16px 24px; }
+  footer { max-width: 1600px; margin: 0 auto; padding: 0 16px 24px; }
 </style>
 </head>
 <body>
