@@ -16,7 +16,7 @@ fetch() {  # fetch <owner/repo> <sha> <dir>: the repo's files at that commit
 }
 
 mkdir -p "$OUT/games"
-cp site/index.html site/play.html site/games.json "$OUT/"
+cp -R site/index.html site/play.html site/games.json site/screenshots "$OUT/"
 
 # Off Line (gllms/off-line): plain JavaScript, served from src/, with our fixed-seed course
 # patch (site/patches/off_line_fixed_seed.patch: every attempt meets the same squares)

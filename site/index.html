@@ -27,7 +27,7 @@
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
           display: flex; flex-direction: column; min-width: 0; }
   .screen { position: relative; background: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 10; }
-  .screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
+  .screen img { display: block; width: 100%; height: 100%; object-fit: contain; }
     .body { padding: 12px 14px 14px; }
   .body h2 { font-size: 16px; margin: 0; }
   .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
@@ -41,7 +41,7 @@
 <header>
   <h1>GGA sample games</h1>
   <div class="muted">The four public sample games of Kaggle's Generalist Gaming Agent competition, built from their
-    authors' open-source repositories (MIT). Click a game to play it; keys go to the game you last clicked.</div>
+    authors' open-source repositories (MIT). Pick a game to play it.</div>
 </header>
 <main id="grid"></main>
 <footer class="muted">How these builds are made: <a href="https://github.com/tonghuikang/generalist-gaming-agents/blob/master/site/README.md">site/README.md</a></footer>
@@ -56,31 +56,18 @@ function el(tag, attrs = {}, ...kids) {
 }
 
 function card(g) {
-  const [w, h] = g.size;
-  const screen = el('div', {class: 'screen'});
-  // The game renders at its own size; the frame is scaled to the card so it looks the same at any width.
-  const frame = el('iframe', {src: g.entry, title: g.title, allow: "fullscreen 'none'"});
-  const fit = () => {   // fit inside the 16:10 panel, centred
-    const s = Math.min(screen.clientWidth / w, screen.clientHeight / h);
-    frame.style.width = w + 'px'; frame.style.height = h + 'px';
-    frame.style.left = (screen.clientWidth - w * s) / 2 + 'px';
-    frame.style.top = (screen.clientHeight - h * s) / 2 + 'px';
-    frame.style.transform = `scale(${s})`;
-  };
-  screen.append(frame);
-  new ResizeObserver(fit).observe(screen);
+  const shot = el('img', {src: `screenshots/${g.id}.jpg`, alt: `${g.title} screenshot`, loading: 'lazy'});
   const credits = el('p', {class: 'muted'}, `${g.authors}. `,
     el('a', {href: g.repo, target: '_blank', rel: 'noopener', text: 'Source'}), ' · ',
     el('a', {href: g.home, target: '_blank', rel: 'noopener', text: 'itch.io'}),
     ...(g.license ? [' · ', el('a', {href: g.license, target: '_blank', rel: 'noopener', text: 'MIT license'})] : []));
   const body = el('div', {class: 'body'},
-    el('div', {class: 'row'}, el('h2', {text: g.title}),
-       el('a', {class: 'play', href: `play.html#${g.id}`, text: 'Play full size'})),
+    el('div', {class: 'row'}, el('h2', {text: g.title}), el('a', {class: 'play', href: `play.html#${g.id}`, text: 'Play'})),
     el('div', {class: 'muted', text: g.genre}),
     el('p', {text: g.about}),
     el('p', {}, el('strong', {text: 'Controls: '}), g.controls),
     credits);
-  return el('article', {class: 'card'}, screen, body);
+  return el('article', {class: 'card'}, el('div', {class: 'screen'}, shot), body);
 }
 
 fetch('games.json').then(r => r.json()).then(j => {
