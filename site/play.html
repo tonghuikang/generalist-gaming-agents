@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GGA Sample Games</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6a66; --line: #e2e0da;
+    --accent: #2f6fdf; --accent-text: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161615; --panel: #1f1f1d; --text: #ecebe7; --muted: #9b9a95; --line: #33322f;
+      --accent: #6c9cf0; --accent-text: #0e0e0d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--accent); }
+  header { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 12px 16px;
+           border-bottom: 1px solid var(--line); background: var(--panel); }
+  header h1 { font-size: 15px; margin: 0 12px 0 0; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--bg); color: var(--text);
+           padding: 6px 12px; border-radius: 6px; cursor: pointer; }
+  button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+  main { display: flex; gap: 16px; padding: 16px; align-items: flex-start; flex-wrap: wrap; }
+  #stage { flex: 1 1 640px; min-width: 0; }
+  iframe { display: block; border: 1px solid var(--line); background: #000; width: 100%; height: auto; }
+  #external { border: 1px dashed var(--line); border-radius: 8px; padding: 32px 16px; text-align: center; }
+  aside { flex: 0 1 340px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+          padding: 14px 16px; }
+  aside h2 { font-size: 16px; margin: 0 0 2px; }
+  .muted { color: var(--muted); }
+  dt { font-weight: 600; margin-top: 10px; }
+  dd { margin: 2px 0 0; }
+  footer { padding: 0 16px 24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GGA sample games</h1>
+  <span id="tabs"></span>
+</header>
+<main>
+  <div id="stage">
+    <iframe id="game" title="game" allow="fullscreen 'none'" hidden></iframe>
+    <div id="external" hidden></div>
+  </div>
+  <aside>
+    <h2 id="title"></h2>
+    <div class="muted" id="genre"></div>
+    <dl>
+      <dt>About</dt><dd id="about"></dd>
+      <dt>Controls</dt><dd id="controls"></dd>
+      <dt>Credits</dt><dd id="credits"></dd>
+    </dl>
+    <p class="muted">Click the game once so it gets keyboard focus.</p>
+  </aside>
+</main>
+<footer class="muted">
+  The four public sample games of Kaggle's Generalist Gaming Agent competition, built from their authors' open-source
+  repositories (MIT), not from the competition dataset. The competition plays slightly modified builds.
+</footer>
+<script>
+let games = {}, current = null;
+
+function link(href, text) {
+  const a = document.createElement('a');
+  a.href = href; a.textContent = text; a.target = '_blank'; a.rel = 'noopener';
+  return a;
+}
+
+function load(id) {
+  current = id;
+  const g = games[id];
+  for (const b of document.querySelectorAll('#tabs button')) b.setAttribute('aria-pressed', b.dataset.id === id);
+  document.getElementById('title').textContent = g.title;
+  document.getElementById('genre').textContent = g.genre;
+  document.getElementById('about').textContent = g.about;
+  document.getElementById('controls').textContent = g.controls;
+  const credits = document.getElementById('credits');
+  credits.replaceChildren(`${g.authors}. `, link(g.repo, 'Source'), ' · ', link(g.home, 'itch.io'),
+                          ...(g.license ? [' · ', link(g.license, 'MIT license')] : []));
+  const frame = document.getElementById('game'), external = document.getElementById('external');
+  frame.hidden = !!g.external;
+  external.hidden = !g.external;
+  if (g.external) {
+    frame.removeAttribute('src');
+    external.replaceChildren(document.createTextNode(g.note + ' '), link(g.home, `Play ${g.title} on itch.io`));
+  } else {
+    frame.style.aspectRatio = `${g.size[0]} / ${g.size[1]}`;
+    frame.style.maxWidth = `${g.size[0]}px`;
+    frame.src = g.entry;
+    frame.onload = () => frame.focus();
+  }
+  history.replaceState(null, '', '#' + id);
+}
+
+fetch('games.json').then(r => r.json()).then(j => {
+  const tabs = document.getElementById('tabs');
+  for (const g of j.games) {
+    games[g.id] = g;
+    const b = document.createElement('button');
+    b.textContent = g.title;
+    b.dataset.id = g.id;
+    b.onclick = () => load(g.id);
+    tabs.append(b);
+  }
+  const want = location.hash.slice(1);
+  load(games[want] ? want : j.games[0].id);
+});
+window.addEventListener('hashchange', () => {
+  const id = location.hash.slice(1);
+  if (games[id] && id !== current) load(id);
+});
+</script>
+</body>
+</html>

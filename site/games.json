@@ -1,0 +1,68 @@
+{
+  "games": [
+    {
+      "id": "asteroid_capitalist",
+      "title": "Asteroid Capitalist",
+      "genre": "Action",
+      "about": "Fly home across the solar system, shooting rival ships for money. A boss arrives after about four minutes.",
+      "controls": "Click Play. WASD or arrow keys to fly, aim with the mouse, hold the left button to fire.",
+      "entry": "games/asteroid_capitalist/index.html",
+      "size": [
+        1280,
+        720
+      ],
+      "authors": "Garlov and Sidaroth",
+      "repo": "https://github.com/Sidaroth/Asteroid.Capitalist",
+      "home": "https://garlov.itch.io/asteroid-capitalist",
+      "license": "games/asteroid_capitalist/LICENSE"
+    },
+    {
+      "id": "blarglike",
+      "title": "Blarglike",
+      "genre": "Adventure",
+      "about": "A turn-based dungeon crawler: collect flowers and batteries, and reach the stairs before the battery runs out.",
+      "controls": "Any key to start, arrow keys to move one tile, R to restart.",
+      "entry": "games/blarglike/index.html",
+      "size": [
+        1280,
+        800
+      ],
+      "authors": "Shenbot Makes (Alexander Shen)",
+      "repo": "https://github.com/alexandersshen/blarglike",
+      "home": "https://alexandershen.itch.io/blarglike",
+      "license": "games/blarglike/LICENSE"
+    },
+    {
+      "id": "cavebots",
+      "title": "Cavebots",
+      "genre": "Strategy",
+      "about": "Dig out of the cave, build generators, turrets and bots, and keep your Core alive against waves of mutants.",
+      "controls": "Click PLAY. Left-click a block to dig, right-click to move the Core, hover a spot and press Q, W, E or R to build.",
+      "entry": "games/cavebots/index.html",
+      "size": [
+        1280,
+        720
+      ],
+      "authors": "Iskander (quasilyte)",
+      "repo": "https://github.com/quasilyte/cavebots-game",
+      "home": "https://quasilyte.itch.io/cavebots",
+      "license": "games/cavebots/LICENSE"
+    },
+    {
+      "id": "off_line",
+      "title": "Off Line",
+      "genre": "Racing",
+      "about": "Stay on the green line, avoid the orange squares and pick up the blue ones. The score grows about 6 points per second while you are on the line. A js13kGames 2018 entry; this build uses a fixed course, the same every attempt.",
+      "controls": "Space to start and to restart, arrow keys to move.",
+      "entry": "games/off_line/index.html",
+      "size": [
+        640,
+        640
+      ],
+      "authors": "gllms (dolorfox)",
+      "repo": "https://github.com/gllms/off-line",
+      "home": "https://dolorfox.itch.io/off-line",
+      "license": "games/off_line/LICENSE"
+    }
+  ]
+}

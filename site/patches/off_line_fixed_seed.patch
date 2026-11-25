@@ -1,0 +1,118 @@
+--- a/src/js/script.js	2026-11-23 23:11:10
++++ b/src/js/script.js	2026-11-23 23:11:19
+@@ -23,6 +23,24 @@
+ var g = ga(w, w, setup)
+ g.start()
+ 
++// Fixed-seed course (not upstream): the squares' sizes and positions come from their own
++// seeded generator (mulberry32), reset at the start of every attempt, so each attempt meets
++// the same course. Particles and sounds keep using Math.random.
++const COURSE_SEED = 13
++var courseState = COURSE_SEED
++
++function courseRandom() {
++  courseState = (courseState + 0x6D2B79F5) | 0
++  var t = Math.imul(courseState ^ (courseState >>> 15), 1 | courseState)
++  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
++  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
++}
++
++// Same contract as Ga's g.randomInt: an integer from min to max inclusive
++function courseInt(min, max) {
++  return Math.floor(courseRandom() * (max - min + 1)) + min
++}
++
+ function setup() {
+   // Create different scenes
+   startScene = g.group()
+@@ -78,9 +96,9 @@
+   // Create obstacles at random positions
+   obstacles = []
+   for (let i = 0; i < 5; i++) {
+-    var o = g.rectangle(g.randomInt(16, 32), g.randomInt(16, 32), 'orange')
+-    o.y = g.randomInt(-o.halfHeight * 20, -o.halfHeight)
+-    o.x = g.randomInt(w / 2.5, w - w / 2.5)
++    var o = g.rectangle(courseInt(16, 32), courseInt(16, 32), 'orange')
++    o.y = courseInt(-o.halfHeight * 20, -o.halfHeight)
++    o.x = courseInt(w / 2.5, w - w / 2.5)
+     o.vy = speed
+     gameScene.addChild(o)
+     obstacles.push(o)
+@@ -90,8 +108,8 @@
+   potions = []
+   for (let i = 0; i < 2; i++) {
+     var p = g.rectangle(16, 16, 'dodgerblue')
+-    p.y = g.randomInt(-p.halfHeight * 20, -p.halfHeight)
+-    p.x = g.randomInt(w / 4, w - w / 4)
++    p.y = courseInt(-p.halfHeight * 20, -p.halfHeight)
++    p.x = courseInt(w / 4, w - w / 4)
+     p.vy = speed
+     gameScene.addChild(p)
+     potions.push(p)
+@@ -116,9 +134,7 @@
+ 
+   // Start the game when space is pressed
+   g.key.space.press = function () {
+-    startScene.visible = false
+-    gameScene.visible = true
+-    g.state = play
++    g.state = reset  // every attempt, the first included, starts from reset()
+   }
+ }
+ 
+@@ -133,8 +149,8 @@
+   obstacles.forEach((o) => {
+     // Move to the top again if at the bottom
+     if (o.y > g.canvas.height + o.height) {
+-      o.x = g.randomInt(w / 4, w - w / 4)
+-      o.y = g.randomInt(-o.halfHeight * 20, -o.halfHeight)
++      o.x = courseInt(w / 4, w - w / 4)
++      o.y = courseInt(-o.halfHeight * 20, -o.halfHeight)
+     }
+ 
+     g.move(o)
+@@ -154,8 +170,8 @@
+ 
+     // Move to the top again if at the bottom
+     if (p.y > g.canvas.height + p.height) {
+-      p.x = g.randomInt(w / 4, w - w / 4)
+-      p.y = g.randomInt(-p.halfHeight * 20, -p.halfHeight)
++      p.x = courseInt(w / 4, w - w / 4)
++      p.y = courseInt(-p.halfHeight * 20, -p.halfHeight)
+     }
+ 
+     g.move(p)
+@@ -181,8 +197,8 @@
+         player.inner.y = 0
+         player.inner.height = 32
+       }
+-      p.x = g.randomInt(w / 4, w - w / 4)
+-      p.y = g.randomInt(-p.halfHeight * 20, -p.halfHeight)
++      p.x = courseInt(w / 4, w - w / 4)
++      p.y = courseInt(-p.halfHeight * 20, -p.halfHeight)
+     }
+ 
+     // Speed up
+@@ -243,17 +259,18 @@
+ function reset() {
+   score = 0
+   speed = 4
++  courseState = COURSE_SEED
+ 
+   // Reset obstacles
+   obstacles.forEach((o) => {
+-    o.x = g.randomInt(w / 4, w - w / 4)
+-    o.y = g.randomInt(-o.halfHeight * 20, -o.halfHeight)
++    o.x = courseInt(w / 4, w - w / 4)
++    o.y = courseInt(-o.halfHeight * 20, -o.halfHeight)
+   })
+ 
+   // Reset potions
+   potions.forEach((p) => {
+-    p.x = g.randomInt(w / 4, w - w / 4)
+-    p.y = g.randomInt(-p.halfHeight * 20, -p.halfHeight)
++    p.x = courseInt(w / 4, w - w / 4)
++    p.y = courseInt(-p.halfHeight * 20, -p.halfHeight)
+   })
+ 
+   player.x = g.canvas.width / 2 - player.width / 2

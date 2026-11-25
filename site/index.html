@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GGA Sample Games</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --panel: #ffffff; --text: #1d1d1b; --muted: #6b6a66; --line: #e2e0da;
+    --accent: #2f6fdf; --accent-text: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161615; --panel: #1f1f1d; --text: #ecebe7; --muted: #9b9a95; --line: #33322f;
+      --accent: #6c9cf0; --accent-text: #0e0e0d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  a { color: var(--accent); }
+  header { padding: 20px 16px 4px; max-width: 1400px; margin: 0 auto; }
+  header h1 { font-size: 20px; margin: 0 0 4px; }
+  .muted { color: var(--muted); }
+  main { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); gap: 16px;
+         padding: 16px; max-width: 1400px; margin: 0 auto; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+          display: flex; flex-direction: column; min-width: 0; }
+  .screen { position: relative; background: #000; overflow: hidden; width: 100%; aspect-ratio: 16 / 10; }
+  .screen iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; }
+    .body { padding: 12px 14px 14px; }
+  .body h2 { font-size: 16px; margin: 0; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .body p { margin: 6px 0 0; }
+  .play { display: inline-block; background: var(--accent); color: var(--accent-text); text-decoration: none;
+          padding: 5px 12px; border-radius: 6px; font-size: 13px; }
+  footer { max-width: 1400px; margin: 0 auto; padding: 0 16px 24px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>GGA sample games</h1>
+  <div class="muted">The four public sample games of Kaggle's Generalist Gaming Agent competition, built from their
+    authors' open-source repositories (MIT). Click a game to play it; keys go to the game you last clicked.</div>
+</header>
+<main id="grid"></main>
+<footer class="muted">How these builds are made: <a href="https://github.com/tonghuikang/generalist-gaming-agents/blob/master/site/README.md">site/README.md</a></footer>
+<script>
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === 'text') e.textContent = v; else e.setAttribute(k, v);
+  }
+  e.append(...kids);
+  return e;
+}
+
+function card(g) {
+  const [w, h] = g.size;
+  const screen = el('div', {class: 'screen'});
+  // The game renders at its own size; the frame is scaled to the card so it looks the same at any width.
+  const frame = el('iframe', {src: g.entry, title: g.title, allow: "fullscreen 'none'"});
+  const fit = () => {   // fit inside the 16:10 panel, centred
+    const s = Math.min(screen.clientWidth / w, screen.clientHeight / h);
+    frame.style.width = w + 'px'; frame.style.height = h + 'px';
+    frame.style.left = (screen.clientWidth - w * s) / 2 + 'px';
+    frame.style.top = (screen.clientHeight - h * s) / 2 + 'px';
+    frame.style.transform = `scale(${s})`;
+  };
+  screen.append(frame);
+  new ResizeObserver(fit).observe(screen);
+  const credits = el('p', {class: 'muted'}, `${g.authors}. `,
+    el('a', {href: g.repo, target: '_blank', rel: 'noopener', text: 'Source'}), ' · ',
+    el('a', {href: g.home, target: '_blank', rel: 'noopener', text: 'itch.io'}),
+    ...(g.license ? [' · ', el('a', {href: g.license, target: '_blank', rel: 'noopener', text: 'MIT license'})] : []));
+  const body = el('div', {class: 'body'},
+    el('div', {class: 'row'}, el('h2', {text: g.title}),
+       el('a', {class: 'play', href: `play.html#${g.id}`, text: 'Play full size'})),
+    el('div', {class: 'muted', text: g.genre}),
+    el('p', {text: g.about}),
+    el('p', {}, el('strong', {text: 'Controls: '}), g.controls),
+    credits);
+  return el('article', {class: 'card'}, screen, body);
+}
+
+fetch('games.json').then(r => r.json()).then(j => {
+  document.getElementById('grid').append(...j.games.filter(g => !g.external).map(card));
+});
+</script>
+</body>
+</html>
