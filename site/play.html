@@ -32,6 +32,7 @@
   .back { display: inline-block; margin-bottom: 10px; }
   dt { font-weight: 600; margin-top: 10px; }
   dd { margin: 2px 0 0; }
+  #score-map { margin-top: 6px; font-variant-numeric: tabular-nums; }
   @media (max-width: 760px) {
     main { flex-direction: column; padding: 8px; gap: 8px; }
     aside { flex: 0 0 auto; max-height: 34%; }
@@ -48,8 +49,12 @@
     <dl>
       <dt>About</dt><dd id="about"></dd>
       <dt>Controls</dt><dd id="controls"></dd>
+      <dt>Scoring</dt><dd id="scoring"></dd>
+      <dd id="score-map"></dd>
       <dt>Credits</dt><dd id="credits"></dd>
     </dl>
+    <p class="muted">On Kaggle each game is played for 10 minutes and its best value maps to 0–1 between doing nothing
+      (0) and the human baseline (1), capped at 1. The leaderboard averages the games.</p>
     <p class="muted">Click the game once so it gets keyboard focus.</p>
     <p class="muted">The four public sample games of Kaggle's Generalist Gaming Agent competition, built from their
       authors' open-source repositories (MIT), not from the competition dataset. The competition plays slightly
@@ -85,6 +90,8 @@ function load(id) {
   document.getElementById('genre').textContent = g.genre;
   document.getElementById('about').textContent = g.about;
   document.getElementById('controls').textContent = g.controls;
+  document.getElementById('scoring').textContent = g.scoring;
+  document.getElementById('score-map').textContent = g.score_map;
   document.getElementById('credits').replaceChildren(`${g.authors}. `, link(g.repo, 'Source'), ' · ',
     link(g.home, 'itch.io'), ...(g.license ? [' · ', link(g.license, 'MIT license')] : []));
   frame.src = g.entry;

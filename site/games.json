@@ -14,7 +14,9 @@
       "authors": "Garlov and Sidaroth",
       "repo": "https://github.com/Sidaroth/Asteroid.Capitalist",
       "home": "https://garlov.itch.io/asteroid-capitalist",
-      "license": "games/asteroid_capitalist/LICENSE"
+      "license": "games/asteroid_capitalist/LICENSE",
+      "scoring": "Dollars earned in the best single game: each kill pays the enemy's maximum health × 10, and the boss pays $3,250.",
+      "score_map": "Kaggle score = min(1, dollars ÷ 5,760). $2,880 → 0.5; $5,760 or more → 1.0."
     },
     {
       "id": "blarglike",
@@ -30,7 +32,9 @@
       "authors": "Shenbot Makes (Alexander Shen)",
       "repo": "https://github.com/alexandersshen/blarglike",
       "home": "https://alexandershen.itch.io/blarglike",
-      "license": "games/blarglike/LICENSE"
+      "license": "games/blarglike/LICENSE",
+      "scoring": "Floor reached × nutrients collected, in the best single run (a fresh run already scores 1).",
+      "score_map": "Kaggle score = min(1, (score − 1) ÷ 901). A fresh run's 1 → 0; 902 or more → 1.0."
     },
     {
       "id": "cavebots",
@@ -46,7 +50,9 @@
       "authors": "Iskander (quasilyte)",
       "repo": "https://github.com/quasilyte/cavebots-game",
       "home": "https://quasilyte.itch.io/cavebots",
-      "license": "games/cavebots/LICENSE"
+      "license": "games/cavebots/LICENSE",
+      "scoring": "Whole seconds the Core survives in the best single battle; destroying the mutant base counts as the full 600 s.",
+      "score_map": "Kaggle score = min(1, seconds ÷ 600). 300 s → 0.5; surviving the whole episode reads 599 s → 0.998."
     },
     {
       "id": "off_line",
@@ -62,7 +68,9 @@
       "authors": "gllms (dolorfox)",
       "repo": "https://github.com/gllms/off-line",
       "home": "https://dolorfox.itch.io/off-line",
-      "license": "games/off_line/LICENSE"
+      "license": "games/off_line/LICENSE",
+      "scoring": "The on-screen counter, about 6 points per second spent on the green line, in the best single run.",
+      "score_map": "Kaggle score = min(1, counter ÷ 781). 781 is about 130 s on the line; 390 → 0.5."
     }
   ]
 }
